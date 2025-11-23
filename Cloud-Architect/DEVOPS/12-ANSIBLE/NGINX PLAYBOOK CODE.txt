@@ -1,0 +1,25 @@
+
+Ngnix installation code on localhost
+
+
+---
+- name: Install Nginx on Localhost
+  hosts: localhost
+  become: true  # Run tasks with escalated privileges (sudo)
+
+  tasks:
+    - name: Update apt cache (for Debian/Ubuntu)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started

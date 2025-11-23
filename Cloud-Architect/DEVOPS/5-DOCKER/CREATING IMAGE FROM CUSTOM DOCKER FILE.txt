@@ -1,0 +1,87 @@
+Dockerfile Code :
+
+FROM ubuntu:18.04
+LABEL maintainer="narendrasivangula@gmail.com"
+
+RUN apt-get update && apt-get -y install apache2
+EXPOSE 80
+
+ENTRYPOINT ["/usr/sbin/apachectl"]
+CMD ["-D", "FOREGROUND"]
+
+
+STEPS :
+
+1. Create a directory named		- mkdir Dockerfiles
+
+2. Perform CD				- cd Dockerfiles
+
+3. Create another directory named	- mkdir ubuntu_apache2_plain
+
+4. Perform CD				- cd ubuntu_apache2_plain
+
+5. Create a Dockerfile			- touch Dockerfile
+
+6. Open the file and Write the code	- nano Dockerfile
+
+7. For building the custom image	- docker build -t narendra115c/ubapache2 .
+
+AFTER CREATING THE IMAGE IN THE CONTAINER
+
+Detatch the original ubuntu image		- docker run -dt --name <image_name> -p 8080:80 <ubuntu_image_id>
+
+Detatch the newly created ubuntu image 		- docker run -dt --name <image_name> -p 8081:80 <ubuntu_image_id>
+
+
+
+
+Here we are taking a plain image "ubuntu:18:04" and we are creating a container by updating it and installing a new package "apache2".From that we are retreiving a custom image.
+
+If we go to the browser and if we type 172.21.128.1(localhost ip):8080, we see a blank error page indicating that the image does not contain any webserver installed in it.
+
+But if we go to the browser and if we type 172.21.128.1(localhost ip):8081, we see a default webpage of apache2 server indicating that the custom image which we have created contains a webserver installed in it.
+
+AFTER THAT WE CAN REMOVE THE DEFAULT WEBPAGE OF APACHE2 SERVER AND WE CAN SET OUR CUSTOM WEBPAGE
+
+1. Perform (we will go to Dockerfiles dir)		- cd ..
+
+2. Create a directory					- mkdir ubuntu_apache2_custom_wp
+
+3. Create a new file					- touch Dockerfile
+
+4. Enter below code into file				- nano Dockerfile
+
+FROM ubuntu:18.04
+LABEL maintainer="narendrasivangula@gmail.com"
+
+RUN apt-get update && apt-get -y install apache2
+EXPOSE 80
+
+ENTRYPOINT ["/usr/sbin/apachectl"]
+CMD ["-D","FOREGROUND"]
+COPY index.html /var/www/html/index.html
+VOLUME /var/www/html
+
+
+5. Create index.html file				- touch index.html
+
+6. Enter code into file 				- nano index.html
+
+7. Build the image					- docker build -t narendra115c/ubapache2wp .
+
+8. Detatch the newly created ubuntu image 		- docker run -dt --name <image_name> -p 8082:80 <ubuntu_image_id>
+
+YOU CAN VERIFY THE WEBPAGE AT 172.21.128.1:8082 WITH A MESSAGE "Welcome To The Image Created By Narendra-Sivangula"
+
+
+WE CAN ALSO PUBLISH OUT IMAGES IN THE DOCKERHUB
+
+1. First create tags					- docker tag narendra115c/ubapache2 narendra115c/ubapache2:v1
+							- docker tag narendra115c/ubapache2wp narendra115c/ubapache2wp:v1
+
+2. Next push them to docker hub				- docker push narendra115c/ubapache2:v1
+							- docker push narendra115c/ubapache2wp:v1
+
+NOW WE CAN SEE THE 2 PUBLISHED IMAGES IN DOCKER
+
+

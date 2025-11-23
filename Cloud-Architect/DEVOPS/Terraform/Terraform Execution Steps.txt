@@ -1,0 +1,9 @@
+1. Download aws cli for executing aws configuring commands through command line    	:   from here {https://developer.hashicorp.com/terraform/downloads?product_intent=terraform} version 386
+
+2. configure environment variables
+
+3. configure aws through command line  :  reference video { https://youtu.be/LjRHJXwHN30 }
+
+4. Execute terraform commands  :      reference video { https://youtu.be/XgwV2HnBSws }
+
+Terrafrom reference Guide(GitHub)  :  { https://github.com/stacksimplify/hashicorp-certified-terraform-associate }

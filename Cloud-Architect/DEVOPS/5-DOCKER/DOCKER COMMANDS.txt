@@ -1,0 +1,55 @@
+			    			Docker Commands
+
+
+ ** Docker image Commands**
+
+1. To Check installed docker version					- docker --version
+
+2. To login on to docker hub						- docker login
+
+3. To logout from docker						- docker logout
+
+4. To search images from hub.docker.com					- docker search <image_name>
+
+5. To pull images from hub.docker.com					- docker pull <image_name>
+
+6. To pull image of specific version					- docker pull <image_name>:<version>
+
+7. To get more details about the image(Perform after img download)	- docker inspect image <image_name>
+
+8. check the downloaded images						- docker images
+
+9. To remove an image							- docker rmi <image_id>
+
+10. To see the history of image 					- docker history <image_name>
+
+
+
+** Docker Container Commands**
+
+11. To list the running containers					- docker ps
+
+12. To list the status of all containers				- docker ps -a
+
+13. To create a container from downloaded image				- docker create <image_id>
+
+14. To create a container with a specific name				- docker create --name <name> <image_name>
+
+15.To start a container							- docker start <container_id>
+
+16.To stop the container						- docker stop <container_id>
+
+17.To forcefully stop the container					- docker kill <container_id>
+
+18.To create,start and login to container at one go			- docker run --name <name> <image_name>
+
+19.To login into the container('-it' means "interactive terminal") 	- docker exec -it <container_id> /bin/bash
+
+20.To see the data in the container					- ls -ltr
+
+21.To create a new file in the container				- touch <newfile.txt>
+
+22.To insert data in the file						- echo "This file is a test file" >> newfile.txt
+
+23.To display the data from the file					- cat newfile.txt
+

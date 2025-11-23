@@ -1,0 +1,10 @@
+docker run -p 8090:8080 -p 50000:50000 -v C:\Users\G.S.Raghavendra\Downloads
+\jenkins_home:/var/jenkins_home jenkins/jenkins:lts-jdk11
+
+https://naiveskill.com/jenkins-pipeline-github/
+https://naiveskill.com/jenkins-scripted-pipeline/
+https://naiveskill.com/jenkins-workflow/
+https://blog.knoldus.com/deploying-a-static-website-to-aws-s3-using-jenkins/
+
+theory part
+https://www.ibm.com/cloud/blog/ci-cd-pipeline

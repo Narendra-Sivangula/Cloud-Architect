@@ -1,0 +1,6 @@
+https://pkg.jenkins.io/debian/
+
+
+https://www.youtube.com/watch?v=4nCBMuqoB2w
+
+https://rishikesh-blog.hashnode.dev/how-to-install-configure-jenkins-on-linux-easily

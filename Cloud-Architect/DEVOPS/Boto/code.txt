@@ -1,2 +1,0 @@
-https://hands-on.cloud/boto3-ec2-tutorial/
-https://hands-on.cloud/boto3-iam-tutorial/

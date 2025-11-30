@@ -1,0 +1,86 @@
+pipeline {
+    agent { label 'jenkins-agent' }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = 'dockerhub-creds'
+        DOCKER_IMAGE = "narendra115c/cloud-architect-app"
+        BUILD_META_URL = "http://build-metadata-service.trace.svc.cluster.local:8001/webhook/build"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+                sh 'echo "Checked out repo:" && pwd && ls'
+            }
+        }
+
+        stage('Collect Git Metadata') {
+            steps {
+                script {
+                    def commitHash = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+                    def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+                    def repoName = sh(returnStdout: true, script: 'basename `git rev-parse --show-toplevel`').trim()
+                    def triggeredBy = (env.BUILD_USER_ID ?: "jenkins")
+
+                    env.CI_COMMIT_HASH   = commitHash
+                    env.CI_BRANCH        = branch
+                    env.CI_REPO          = repoName
+                    env.CI_TRIGGERED_BY  = triggeredBy
+
+                    echo "Commit: ${env.CI_COMMIT_HASH}"
+                    echo "Branch: ${env.CI_BRANCH}"
+                    echo "Repo:   ${env.CI_REPO}"
+                    echo "User:   ${env.CI_TRIGGERED_BY}"
+                }
+            }
+        }
+
+        stage('Simulated Build (no Docker yet)') {
+            steps {
+                script {
+                    // Later: replace this with real docker build/push via Kaniko or DinD
+                    def imageTag = "${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                    env.IMAGE_TAG = imageTag
+                    echo "Simulating image build: ${imageTag}"
+                }
+            }
+        }
+
+        stage('Send Build Metadata to API') {
+            steps {
+                script {
+                    def payload = [
+                        build_id    : "${env.JOB_NAME}#${env.BUILD_NUMBER}",
+                        job_name    : env.JOB_NAME,
+                        build_number: env.BUILD_NUMBER as int,
+                        commit_hash : env.CI_COMMIT_HASH,
+                        repo        : env.CI_REPO,
+                        branch      : env.CI_BRANCH,
+                        status      : currentBuild.currentResult ?: "SUCCESS",
+                        triggered_by: env.CI_TRIGGERED_BY,
+                        image_tag   : env.IMAGE_TAG,
+                        jenkins_url : env.BUILD_URL
+                    ]
+
+                    def json = groovy.json.JsonOutput.toJson(payload)
+                    echo "Sending payload to Build Metadata API:"
+                    echo json
+
+                    sh """
+                      curl -s -X POST '${BUILD_META_URL}' \
+                        -H 'Content-Type: application/json' \
+                        -d '${json}'
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Build finished with status: ${currentBuild.currentResult}"
+        }
+    }
+}

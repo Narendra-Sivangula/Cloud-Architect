@@ -48,34 +48,41 @@ pipeline {
             }
         }
 
-        stage('Send Build Metadata to API') {
-            steps {
-                script {
-                    def payload = [
-                        build_id    : "${env.JOB_NAME}#${env.BUILD_NUMBER}",
-                        job_name    : env.JOB_NAME,
-                        build_number: env.BUILD_NUMBER as int,
-                        commit_hash : env.CI_COMMIT_HASH,
-                        repo        : env.CI_REPO,
-                        branch      : env.CI_BRANCH,
-                        status      : currentBuild.currentResult ?: "SUCCESS",
-                        triggered_by: env.CI_TRIGGERED_BY,
-                        image_tag   : env.IMAGE_TAG,
-                        jenkins_url : env.BUILD_URL
-                    ]
+stage('Send Build Metadata to API') {
+    steps {
+        script {
+            def startedAt = new Date(currentBuild.startTimeInMillis)
+                .format("yyyy-MM-dd'T'HH:mm:ssXXX", TimeZone.getTimeZone('UTC'))
 
-                    def json = groovy.json.JsonOutput.toJson(payload)
-                    echo "Sending payload to Build Metadata API:"
-                    echo json
+            def finishedAt = new Date()
+                .format("yyyy-MM-dd'T'HH:mm:ssXXX", TimeZone.getTimeZone('UTC'))
 
-                    sh """
-                      curl -s -X POST '${BUILD_META_URL}' \
-                        -H 'Content-Type: application/json' \
-                        -d '${json}'
-                    """
-                }
-            }
+            def payload = [
+                build_id    : "${env.JOB_NAME}#${env.BUILD_NUMBER}",
+                job_name    : env.JOB_NAME,
+                build_number: env.BUILD_NUMBER as int,
+                commit_hash : env.CI_COMMIT_HASH,
+                repo        : env.CI_REPO,
+                branch      : env.CI_BRANCH,
+                status      : currentBuild.currentResult ?: "SUCCESS",
+                triggered_by: env.CI_TRIGGERED_BY,
+                image_tag   : env.IMAGE_TAG,
+                jenkins_url : env.BUILD_URL,
+                started_at  : startedAt,
+                finished_at : finishedAt
+            ]
+
+            def json = groovy.json.JsonOutput.toJson(payload)
+
+            sh """
+                curl -s -X POST '${BUILD_META_URL}' \
+                    -H 'Content-Type: application/json' \
+                    -d '${json}'
+            """
         }
+    }
+}
+
     }
 
     post {

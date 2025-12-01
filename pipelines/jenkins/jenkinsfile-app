@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     def commitHash = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-                    def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+                    def branch = env.GIT_BRANCH?.replace("origin/", "") ?: "unknown"
                     def repoName = sh(returnStdout: true, script: 'basename `git rev-parse --show-toplevel`').trim()
                     def triggeredBy = (env.BUILD_USER_ID ?: "jenkins")
 

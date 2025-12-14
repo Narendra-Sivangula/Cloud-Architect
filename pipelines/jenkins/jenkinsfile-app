@@ -31,11 +31,6 @@ pipeline {
                 }
             }
         }
-        stage('Force Failure (Test)') {
-    steps {
-        sh 'exit 1'
-            }
-        }
 
 
         stage('Simulated Build (no Docker yet)') {

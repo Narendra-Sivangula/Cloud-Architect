@@ -52,13 +52,13 @@ pipeline {
         }
 
         // 🔥 INTENTIONAL FAILURE STAGE
-        //stage('Intentional Failure') {
-        //    steps {
-        //        script {
-        //            error("Failing the Jenkins build intentionally for testing")
-        //        }
-        //    }
-        //}
+        stage('Intentional Failure') {
+            steps {
+                script {
+                    error("Failing the Jenkins build intentionally for testing")
+                }
+            }
+        }
     }
 
     // 🔥 POST BLOCK (WILL STILL RUN EVEN ON FAILURE)
